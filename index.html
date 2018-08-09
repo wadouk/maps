@@ -28,6 +28,11 @@
     <script type="text/javascript" src="//unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
     <script type="text/javascript" src="//unpkg.com/leaflet-providers@1.3.0/leaflet-providers.js"></script>
 
+    <script type="text/javascript" src="//unpkg.com/leaflet.locatecontrol@0.62.0/dist/L.Control.Locate.min.js"></script>
+    <link rel="stylesheet" href="//unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//unpkg.com/leaflet.locatecontrol@0.62.0/dist/L.Control.Locate.min.css" />
+
+
   </head>
   <body>
     <div id="map"></div>
@@ -51,10 +56,12 @@
 
         map.addLayer(Object.values(baseLayers)[0])
 
+        L.control.locate().addTo(map)
+
         L.control.scale({
             imperial: false,
             maxWidth: Math.round(window.screen.width / 3)
-        }).addTo(map);
+        }).addTo(map)
 
         function viewportZoom(offset) {
             return () => {
