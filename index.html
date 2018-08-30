@@ -239,22 +239,9 @@
         L.control.scale({
             imperial: false,
             maxWidth: Math.round(window.screen.width / 3)
-        }).addTo(map)
+        }).addTo(map);
 
-        function viewportZoom(offset) {
-            return () => {
-                var vp = document.querySelector("meta[name=viewport]");
-                let content = vp.getAttribute("content")
-                var initialScale = (/initial-scale=(.+)/).exec(content);
-                vp.setAttribute("content", content.replace(initialScale[0], "initial-scale=" + (parseFloat(initialScale[1]) + offset)))
-                setTimeout(() => map.invalidateSize(false), 0)
-            }
-        }
-
-        (new (L.Control.Zoom.extend({
-            _zoomIn: viewportZoom(0.1),
-            _zoomOut: viewportZoom(-0.1)
-        }))()).addTo(map)
+        L.control.zoom().addTo(map);
     }
 </script>
 </body>
