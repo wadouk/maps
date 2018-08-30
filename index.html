@@ -137,6 +137,7 @@
             onAdd: function (m) {
                 this._map = m
                 this.w = document.createElement('div')
+                L.DomEvent.disableClickPropagation(this.w)
                 this.w.setAttribute('class', 'control-coord-toggler')
                 var labelLat = document.createElement('label')
                 labelLat.textContent = 'Lat'
@@ -189,6 +190,7 @@
             onAdd: function (m) {
                 this._map = m
                 this._container = document.createElement('div')
+                L.DomEvent.disableClickPropagation(this._container)
                 this._w = document.createElement('span')
                 this._label0 = document.createElement('div')
                 this._label0.innerText = 'BBox 📋'
