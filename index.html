@@ -65,6 +65,14 @@
         window.addEventListener('popstate', function (e) {
             if (e.state) {
                 map.setView(L.latLng(e.state.lat, e.state.lng), e.state.zoom)
+            } else {
+                const o = location.hash.slice(1).split('&')
+                    .map(x => x.split('='))
+                    .reduce((a, b) => {
+                        a[b[0]] = b[1]
+                        return a
+                    }, {})
+                map.setView(L.latLng(o.lat, o.lng), o.zoom)
             }
         })
 
