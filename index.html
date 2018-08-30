@@ -221,9 +221,9 @@
             _displayBbox: function () {
                 let bounds = this._map.getBounds();
                 this._w.innerHTML = `N: ${degHourCoordinateConvert.convert(bounds.getNorth())}`
-                    + `<br/>S: : ${degHourCoordinateConvert.convert(bounds.getSouth())}`
-                    + `<br/>E: : ${degHourCoordinateConvert.convert(bounds.getEast())}`
-                    + `<br/>W: : ${degHourCoordinateConvert.convert(bounds.getWest())}`
+                    + `<br/>S: ${degHourCoordinateConvert.convert(bounds.getSouth())}`
+                    + `<br/>E: ${degHourCoordinateConvert.convert(bounds.getEast())}`
+                    + `<br/>W: ${degHourCoordinateConvert.convert(bounds.getWest())}`
             },
 
             onRemove: function() {
