@@ -42,6 +42,29 @@
             zoomControl: false
         }).setView([48.845,2.424],10)
 
+        function toHistory() {
+            let data = {
+                lat: +map.getCenter().lat.toFixed(6),
+                lng: +map.getCenter().lng.toFixed(6),
+                zoom: map.getZoom(),
+            };
+            return [data, undefined, '#' + Object.entries(data).map(e => {
+                return e.join('=')
+            }).join('&')]
+        }
+
+        history.replaceState.apply(history, toHistory())
+
+        map.on('moveend', function () {
+            history.pushState.apply(history, toHistory())
+        })
+
+        window.addEventListener('popstate', function (e) {
+            if (e.state) {
+                map.setView(L.latLng(e.state.lat, e.state.lng), e.state.zoom)
+            }
+        })
+
         let baseLayers = {
             fr: L.tileLayer.provider("OpenStreetMap.France"),
             ign: L.tileLayer.provider("GeoportailFrance.ignMaps", {
