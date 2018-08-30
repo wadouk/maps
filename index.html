@@ -28,8 +28,16 @@
             position: fixed;
         }
 
-        .display-bbox {
+        .control-coord-toggler input {
+            max-width: 6em;
+        }
+
+        .display-bbox, .control-coord-toggler {
             background: hsla(0, 0%, 99%, 0.8);
+        }
+        .control-coord-toggler label {
+            padding-right: 0.4em;
+            padding-left: 0.3em;
         }
 
     </style>
@@ -106,6 +114,77 @@
 
         map.addLayer(Object.values(baseLayers)[0])
 
+        let degHourCoordinateConvert = new (L.Control.extend({
+            _writers: {
+                '\u23E8': function (v) {
+                    let defreeFloat = v;
+                    let degree = Math.trunc(defreeFloat);
+                    let minuteFloat = (defreeFloat - degree) * 60;
+                    let minute = Math.trunc(minuteFloat);
+                    let secondFloat = Math.trunc((minuteFloat - minute) * 60);
+                    return degree + '° ' + minute + '\' ' + secondFloat + '"'
+                },
+                '⌚': function (v) {
+                    return +v.toFixed(6)
+                }
+            },
+            numberInput: function () {
+                var input = document.createElement('input')
+                input.setAttribute('type', 'text')
+                input.setAttribute('readonly', 'true')
+                return input
+            },
+            onAdd: function (m) {
+                this._map = m
+                this.w = document.createElement('div')
+                this.w.setAttribute('class', 'control-coord-toggler')
+                var labelLat = document.createElement('label')
+                labelLat.textContent = 'Lat'
+                labelLat.setAttribute('for', 'lat')
+                var labelLng = document.createElement('label')
+                labelLng.textContent = 'Lng'
+                labelLng.setAttribute('for', 'lng')
+                this.inputLat = this.numberInput()
+                this.inputLat.id = 'lat'
+                this.inputLng = this.numberInput()
+                this.inputLng.id = 'lng'
+                this.i = document.createElement('button')
+                this.i.textContent = '\u23E8'
+                this.i.addEventListener('click', this._toggle.bind(this))
+                this.w.appendChild(labelLat)
+                this.w.appendChild(this.inputLat)
+                this.w.appendChild(labelLng)
+                this.w.appendChild(this.inputLng)
+                this.w.appendChild(this.i)
+                this._setValues()
+                this._map.on('moveend', this._setValues.bind(this))
+                return this.w
+            },
+            _setValues: function () {
+               this.inputLng.value = this._getWriter()(this._map.getCenter().lng)
+               this.inputLat.value = this._getWriter()(this._map.getCenter().lat)
+            },
+            convert: function (v) {
+                return this._getWriter()(v)
+            },
+
+            _getWriter: function () {
+                return this._writers[this.i.textContent]
+            },
+
+            _toggle: function (e) {
+                e.target.textContent = e.target.textContent === '\u23E8' ? '⌚' : '\u23E8'
+                this._setValues()
+            },
+
+            onRemove: function() {
+                this.w.parentNode.removeChild(this.w)
+                this._map = undefined
+            },
+            getPosition: () => 'topleft'
+        }))()
+        degHourCoordinateConvert.addTo(map)
+
         let displayBbox = new (L.Control.extend({
             onAdd: function (m) {
                 this._map = m
@@ -116,6 +195,7 @@
                 this._container.setAttribute('class', 'display-bbox')
                 this._w.addEventListener('click', this._copy.bind(this))
                 this._map.on('moveend', this._displayBbox.bind(this))
+                this._map.on('convertChange', this._displayBbox.bind(this))
                 this._displayBbox()
                 this._displayBbox()
                 this._displayBbox()
@@ -138,10 +218,10 @@
             },
             _displayBbox: function () {
                 let bounds = this._map.getBounds();
-                this._w.innerHTML = `N: ${+bounds.getNorth().toFixed(6)}`
-                    + `<br/>S: : ${+bounds.getSouth().toFixed(6)}`
-                    + `<br/>E: : ${+bounds.getEast().toFixed(6)}`
-                    + `<br/>W: : ${+bounds.getWest().toFixed(6)}`
+                this._w.innerHTML = `N: ${degHourCoordinateConvert.convert(bounds.getNorth())}`
+                    + `<br/>S: : ${degHourCoordinateConvert.convert(bounds.getSouth())}`
+                    + `<br/>E: : ${degHourCoordinateConvert.convert(bounds.getEast())}`
+                    + `<br/>W: : ${degHourCoordinateConvert.convert(bounds.getWest())}`
             },
 
             onRemove: function() {
