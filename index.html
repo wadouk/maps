@@ -48,10 +48,26 @@
     window.onload = function () {
         var map = L.map("map", {
             zoomControl: false
-        }).setView([48.845, 2.424], 10)
+        })
+
+        function fromHash() {
+            return location.hash.slice(1).split('&')
+                .map(x => x.split('='))
+                .reduce((a, b) => {
+                    a[b[0]] = b[1]
+                    return a
+                }, {})
+
+        }
 
         function toHistory() {
-            let data = {
+            try {
+                map.getCenter()
+            } catch (e) {
+                const o = fromHash()
+                map.setView([o.lat || 48.845, o.lng || 2.424], o.zoom || 10)
+            }
+            var data = {
                 lat: +map.getCenter().lat.toFixed(6),
                 lng: +map.getCenter().lng.toFixed(6),
                 zoom: map.getZoom(),
@@ -71,12 +87,7 @@
             if (e.state) {
                 map.setView(L.latLng(e.state.lat, e.state.lng), e.state.zoom)
             } else {
-                const o = location.hash.slice(1).split('&')
-                    .map(x => x.split('='))
-                    .reduce((a, b) => {
-                        a[b[0]] = b[1]
-                        return a
-                    }, {})
+                const o = fromHash()
                 map.setView(L.latLng(o.lat, o.lng), o.zoom)
             }
         })
