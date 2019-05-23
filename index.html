@@ -48,6 +48,8 @@
     <link rel="stylesheet" href="//unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//unpkg.com/leaflet.locatecontrol@0.62.0/dist/L.Control.Locate.min.css"/>
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
 </head>
 <body>
@@ -117,6 +119,10 @@
                 , minZoom: 6
                 }
             )
+        }).addTo(map);
+
+        L.Control.geocoder({
+            showResultIcons: true
         }).addTo(map);
 
         map.addLayer(Object.values(baseLayers)[0])
