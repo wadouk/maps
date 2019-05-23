@@ -109,7 +109,14 @@
             topo: L.tileLayer.provider("OpenTopoMap"),
         }
         L.control.layers(baseLayers, {
-            relief: L.tileLayer.provider("HikeBike.HillShading")
+            relief: L.tileLayer.provider("HikeBike.HillShading"),
+            avex: L.tileLayer("https://avex-asso.org/dossiers/pl/cartes/tileserver.php?/index.json?/pol-lum-europe-2018/{z}/{x}/{y}.png",
+                { opacity: 0.6
+                , attribution: '<a href="https://www.avex-asso.org/dossiers/wordpress/fr_FR/la-pollution-lumineuse-light-pollution/cartes-de-pollution-europeenne-avex-2016?lang=fr_FR#-cartes-classiques" rel="nofollow noopener noreferer">avex</a>'
+                , maxZoom: 11
+                , minZoom: 6
+                }
+            )
         }).addTo(map);
 
         map.addLayer(Object.values(baseLayers)[0])
