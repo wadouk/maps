@@ -114,8 +114,9 @@
             topo: L.tileLayer.provider("OpenTopoMap"),
         }
         L.control.layers(baseLayers, {
-            relief: L.tileLayer.wms('http://ows.mundialis.de/services/service?', {
-              layers: 'SRTM30-Hillshade'
+            relief: L.tileLayer.wms('http://ows.mundialis.de/services/service?', 
+            { layers: 'SRTM30-Hillshade'
+            , opacity: 0.6
             }),
             avex: L.tileLayer("https://avex-asso.org/dossiers/pl/cartes/tileserver.php?/index.json?/pol-lum-europe-2018/{z}/{x}/{y}.png",
                 { opacity: 0.6
